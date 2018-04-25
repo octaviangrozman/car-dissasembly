@@ -2,6 +2,8 @@ package models;
 
 import java.util.ArrayList;
 
+import shared.PartType;
+
 public class PartList
 {
    private ArrayList<CarPart> parts;
@@ -56,7 +58,7 @@ public class PartList
       return toReturn;
    }
    
-   public CarPart getPartByType(String type)
+   public CarPart getPartByType(PartType type)
    {
       for(CarPart p : parts)
       {
@@ -66,7 +68,7 @@ public class PartList
       return null;
    }
    
-   public PartList getPartsByType(String type)
+   public PartList getPartsByType(PartType type)
    {
       PartList toReturn = new PartList();
       
@@ -78,7 +80,7 @@ public class PartList
       return toReturn;
    }
    
-   public PartList getPartsByType(int amount, String type)
+   public PartList getPartsByType(int amount, PartType type)
    {
       PartList toReturn = new PartList();
       int added = 0; 

@@ -1,14 +1,16 @@
 package models;
 
+import shared.PartType;
+
 public class Pallet
 {
    private int palletNo; //like IDs - get from DB
    private double weightCapacity;
-   private String partType;
+   private PartType partType;
    private PartList parts;
    private double currentWeight;
    
-   public Pallet(double weightCapacity, String partType)
+   public Pallet(double weightCapacity, PartType partType)
    {
       this.weightCapacity = weightCapacity;
       this.partType = partType;
@@ -36,12 +38,12 @@ public class Pallet
       this.weightCapacity = weightCapacity;
    }
    
-   public String getPartType()
+   public PartType getPartType()
    {
       return partType;
    }
    
-   public void setPartType(String partType)
+   public void setPartType(PartType partType)
    {
       this.partType = partType;
    }

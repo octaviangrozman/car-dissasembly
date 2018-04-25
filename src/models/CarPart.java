@@ -1,13 +1,15 @@
 package models;
 
+import shared.PartType;
+
 public class CarPart {
     private int id;
     private double weight;
     private int chassisNo;
     private String model;
-    private String type;
+    private PartType type;
 
-    public CarPart(double weight, int chassisNo, String model, String type) {
+    public CarPart(double weight, int chassisNo, String model, PartType type) {
         this.weight = weight;
         this.chassisNo = chassisNo;
         this.model = model;
@@ -46,11 +48,11 @@ public class CarPart {
         this.model = model;
     }
 
-    public String getType() {
+    public PartType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PartType type) {
         this.type = type;
     }
 }

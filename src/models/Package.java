@@ -1,13 +1,15 @@
 package models;
 
+import shared.PartType;
+
 public class Package
 {
    private int packageNo;
    private String carModel;
-   private String partType;
+   private PartType partType;
    private PartList parts;
    
-   public Package(int packageNo, String carModel, String partType)
+   public Package(int packageNo, String carModel, PartType partType)
    {
       this.packageNo = packageNo;
       this.carModel = carModel;
@@ -35,12 +37,12 @@ public class Package
       this.carModel = carModel;
    }
 
-   public String getPartType()
+   public PartType getPartType()
    {
       return partType;
    }
 
-   public void setPartType(String partType)
+   public void setPartType(PartType partType)
    {
       this.partType = partType;
    }
