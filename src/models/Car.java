@@ -1,5 +1,5 @@
 package models;
-
+// IF WE DON'T USE CAR CLASS DELETE IT
 public class Car {
 
     private int chassisNo;
