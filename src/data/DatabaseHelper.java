@@ -10,8 +10,8 @@ import org.postgresql.Driver;
 public class DatabaseHelper<T>
 {
    private DatabaseConnectionInfo dbConnection;
-   private String DBurl = "jdbc:postgresql://localhost:5432/postgres?currentSchema=car_base";
-   private String DBPassword = "password";
+   private String DBurl = "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public";
+   private String DBPassword = "123456";
    private String DBUser = "postgres";
    
    public DatabaseHelper()

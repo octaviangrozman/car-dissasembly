@@ -34,8 +34,8 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    private Connection getConnection() throws SQLException
    {
       return DriverManager.getConnection(
-            "jdbc:postgresql://localhost:5432/postgres?currentSchema=car_base",
-            "postgres", "password");
+            "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public",
+            "postgres", "123456");
    }
    ////////SQL DML STATEMENTS//////////////////////////////////////////////////////////////////
     ///////////////////////////////////
@@ -229,16 +229,17 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       try (Connection connection = getConnection())
       {
          Statement stat = connection.createStatement();
-         stat.executeUpdate("DELETE FROM car");
          stat.executeUpdate("INSERT INTO car VALUES(123456, 'Ford', 2000)");
+         stat.executeUpdate("DELETE FROM car");
+         
       }
    }
 
    public static void startAsServer() throws RemoteException
    {
-      DAOServer carDAOServer = new DAOServer();
+      DAOServer DAOServer = new DAOServer();
       Registry registry = LocateRegistry.getRegistry(1099);
-      registry.rebind("carDao", carDAOServer);
+      registry.rebind("Dao", DAOServer);
    }
 
    public static void startAsTestServer() throws RemoteException, SQLException

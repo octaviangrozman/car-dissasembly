@@ -2,6 +2,7 @@ package shared;
 
 import java.io.Serializable;
 
+
 public class CarPartDTO implements Serializable 
 {
    private static final long serialVersionUID = 1L;
@@ -44,5 +45,7 @@ public class CarPartDTO implements Serializable
   public PartType getType() {
       return type;
   }
+  
+ 
 
 }
