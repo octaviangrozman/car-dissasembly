@@ -1,3 +1,7 @@
+CREATE TYPE partType AS ENUM('Wheel', 'Engine', 'Windscreen', 'Horn', 'Lights', 'Door',
+    						 'Seats','SeatBelts','Steering','Suspension',
+    						 'Gearbox','FuelSystem','TrunkTailgate');
+
 create table car
 (
 	chassisNo int primary key,
@@ -9,7 +13,7 @@ create table Pallet
 (
 	palletNo int primary key,
 	weightCapacity numeric(7,2),
-	partType varchar(20)
+	partType varchar(20);
 );
 
 create table Package
@@ -26,5 +30,6 @@ create table Part
 	palletNo int references Pallet(palletNo),
 	packageNo int references Package(PackageNo),
 	partType varchar(20),
+	carModel varchar(20),
 	partWeight numeric(5,2)
 );

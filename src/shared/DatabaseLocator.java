@@ -5,12 +5,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import data.DAOServer;
+
 public class DatabaseLocator {
 
-    public static DatabaseServer getDatabaseServer() throws RemoteException {
-        Registry registry = LocateRegistry.getRegistry(DatabaseServer.PORT);
+    public static RIDaoServer getDatabaseServer() throws RemoteException {
+        Registry registry = LocateRegistry.getRegistry(RIDaoServer.PORT);
         try {
-            return (DatabaseServer) registry.lookup(DatabaseServer.SERVER_NAME);
+            return (RIDaoServer) registry.lookup(RIDaoServer.SERVER_NAME);
         } catch (NotBoundException e) {
             throw new RemoteException(e.getMessage(), e);
         }

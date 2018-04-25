@@ -6,14 +6,14 @@ import java.util.Collection;
 
 public interface PalletDAO extends Remote
 {
-   PalletDTO create(double weightCapacity, PartType partType)
+   PalletDTO insertPallet(double weightCapacity, PartType partType)
          throws RemoteException;
 
-   Collection<PalletDTO> readAll() throws RemoteException;
+   Collection<PalletDTO> readAllPallets() throws RemoteException;
 
-   void update(PalletDTO pallet) throws RemoteException;
+   void updatePallet(PalletDTO pallet) throws RemoteException;
 
-   void delete(PalletDTO pallet) throws RemoteException;
+   void deletePallet(PalletDTO pallet) throws RemoteException;
 
-   PalletDTO read(int palletNo) throws RemoteException;
+   PalletDTO readPallet(int palletNo) throws RemoteException;
 }

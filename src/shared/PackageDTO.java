@@ -13,9 +13,8 @@ public class PackageDTO implements Serializable
    private PartType partType;
    private PartList parts;
    
-   public PackageDTO(int packageNo, String carModel, PartType partType)
+   public PackageDTO(String carModel, PartType partType)
    {
-      this.packageNo = packageNo;
       this.carModel = carModel;
       this.partType = partType;
       parts = new PartList();

@@ -2,8 +2,8 @@ package dissasembleServer;
 
 import models.CarPart;
 import shared.DatabaseLocator;
-import shared.DatabaseServer;
 import shared.DissasembleServer;
+import shared.RIDaoServer;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -14,9 +14,9 @@ import java.util.List;
 
 public class DissasembleCarServer extends UnicastRemoteObject implements DissasembleServer {
 
-    private DatabaseServer databaseServer;
+    private RIDaoServer databaseServer;
 
-    public DissasembleCarServer(DatabaseServer databaseServer) throws RemoteException {
+    public DissasembleCarServer(RIDaoServer databaseServer) throws RemoteException {
         this.databaseServer = databaseServer;
     }
 
