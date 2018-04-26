@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class DissasembleCarServer extends UnicastRemoteObject
-      implements RIDissasembleServer
+      implements RIDissasembleFacility
 {
 
    private CarPartDAO carPartDAO;
@@ -73,10 +73,10 @@ public class DissasembleCarServer extends UnicastRemoteObject
 
    public static void main(String[] args) throws RemoteException
    {
-      RIDissasembleServer branchBankServer = new DissasembleCarServer(
+      RIDissasembleFacility branchBankServer = new DissasembleCarServer(
             DatabaseLocator.getDatabaseServer());
-      Registry registry = LocateRegistry.getRegistry(RIDissasembleServer.PORT);
-      registry.rebind(RIDissasembleServer.SERVER_NAME, branchBankServer);
+      Registry registry = LocateRegistry.getRegistry(RIDissasembleFacility.PORT);
+      registry.rebind(RIDissasembleFacility.SERVER_NAME, branchBankServer);
       System.out.println("Dissasemble server started...");
    }
 }

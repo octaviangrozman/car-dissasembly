@@ -161,10 +161,10 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    }
    
    @Override
-   public Collection<PalletDTO> readPalletsByType(String partType) throws RemoteException
+   public Collection<PalletDTO> readPalletsByType(PartType partType) throws RemoteException
    {
       //AnimalType.valueOf(stmt.getString("pet_type"));
-      return palletHelper.map((rs) -> createPallet(rs), "Select * from Pallet where partType = CAST(? AS CPartType)", partType);
+      return palletHelper.map((rs) -> createPallet(rs), "Select * from Pallet where partType = CAST(? AS CPartType)", PartType.valueOf(partType.toString()).toString());
    }
    
    @Override
@@ -285,7 +285,7 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
             this.insertPallet(3241.00, PartType.Door);
             this.insertPallet(3211.00, PartType.Door);
             this.insertPallet(3211.00, PartType.Engine);*/
-            System.out.println(this.readPalletsByType("Door").toString());
+            System.out.println(this.readPalletsByType(PartType.Door).toString());
             //this.insertCarPart(23.76, 232342, "Ferrari", PartType.Door);
            // this.insertPackage("Ferrari", PartType.FuelSystem);
             System.out.println(this.readAllCarParts().toString());
