@@ -11,10 +11,10 @@ import java.util.*;
 
 import static java.lang.System.out;
 
-public class DisassembleCarFacility extends UnicastRemoteObject implements RIDissasembleFacility {
+public class DisassembleCarFacility extends UnicastRemoteObject implements RIDisassembleFacility {
 
-    private static final int MAX_PALLET_WEIGHT_CAPACITY = 500;
-    private static final int MAX_CAR_PART_WEIGHT = 100;
+    private static final int MAX_PALLET_WEIGHT_CAPACITY_KG = 500;
+    private static final int MAX_CAR_PART_WEIGHT_KG = 100;
     private CarPartDAO carPartDAO;
     private PalletDAO palletDAO;
     private Random random = new Random();
@@ -32,22 +32,23 @@ public class DisassembleCarFacility extends UnicastRemoteObject implements RIDis
 
         for(PartType partType : partTypes) {
             double partWeight = getRandomWeight();
-            int palletNo = getPalletNo(partType, partWeight);
 
-            // TODO: update pallet for car part in database
-            carPartDAO.insertCarPart(partWeight, car.getChassisNo(), car.getModel(), partType);
+            CarPartDTO carInDb = carPartDAO.insertCarPart(partWeight, car.getChassisNo(), car.getModel(), partType);
+
+            carPartDAO.updateCarPartReferenceToPallet(carInDb.getId(), getPalletNo(partType, partWeight));
         }
     }
 
     private int getPalletNo(PartType partType, double partWeight) throws RemoteException {
         PalletDTO[] pallets = (PalletDTO[]) palletDAO.readPalletsByType(partType).toArray();
         for (PalletDTO pallet : pallets) {
-            if (pallet.getCurrentWeight() + partWeight < pallet.getWeightCapacity()) {
+            double currentWeight = palletDAO.getPalletCurrentWeight(pallet.getPalletNo());
+            if (currentWeight + partWeight < pallet.getWeightCapacity()) {
                 return pallet.getPalletNo();
             }
         }
         // if no free pallet found, create a new one, and add part to it
-        PalletDTO pallet = palletDAO.insertPallet(MAX_PALLET_WEIGHT_CAPACITY , partType);
+        PalletDTO pallet = palletDAO.insertPallet(MAX_PALLET_WEIGHT_CAPACITY_KG , partType);
         return pallet.getPalletNo();
     }
 
@@ -75,14 +76,14 @@ public class DisassembleCarFacility extends UnicastRemoteObject implements RIDis
     }
 
     private double getRandomWeight() {
-        return random.nextDouble() * MAX_CAR_PART_WEIGHT;
+        return random.nextDouble() * MAX_CAR_PART_WEIGHT_KG;
     }
 
 
     public static void main(String[] args) throws RemoteException {
-        RIDissasembleFacility disassembleCarFacility = new DisassembleCarFacility(DatabaseLocator.getDatabaseServer());
-        Registry registry = LocateRegistry.getRegistry(RIDissasembleFacility.PORT);
-        registry.rebind(RIDissasembleFacility.SERVER_NAME, disassembleCarFacility);
+        RIDisassembleFacility disassembleCarFacility = new DisassembleCarFacility(DatabaseLocator.getDatabaseServer());
+        Registry registry = LocateRegistry.getRegistry(RIDisassembleFacility.PORT);
+        registry.rebind(RIDisassembleFacility.SERVER_NAME, disassembleCarFacility);
         out.println("Disassemble server started...");
     }
 }
