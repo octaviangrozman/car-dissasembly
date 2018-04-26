@@ -12,6 +12,8 @@ public interface CarPartDAO extends Remote {
    void updateCarPartReferenceToPackage(int partID, int packageNo) throws RemoteException;
    void deleteCarPart(CarPartDTO carPart) throws RemoteException;
    CarPartDTO readCarPart(int id) throws RemoteException;
+   CarPartDTO readCarPartByType(PartType type) throws RemoteException;
+   CarPartDTO readCarPartByTypeAndModel(PartType type, String model) throws RemoteException;
 }
 
 
