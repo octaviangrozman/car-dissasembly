@@ -35,19 +35,19 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       return DriverManager.getConnection(
             "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public",
-            "postgres", "123456");
+            "postgres", "teentitans1sasu");
    }
    ////////SQL DML STATEMENTS//////////////////////////////////////////////////////////////////
     ///////////////////////////////////
    //DAO Insert Statements////////////
   ///////////////////////////////////
    @Override
-   public CarDTO insertCar(int chassisNo, String model, double weight)
+   public CarDTO insertCar(CarDTO car/*int chassisNo, String model, double weight*/)
          throws RemoteException
    {
-      carHelper.executeUpdate("INSERT INTO car (chassisNo, model, carweight) VALUES (?, ?, ?)", chassisNo, model,
-            weight);
-      return new CarDTO(chassisNo, model, weight);
+      carHelper.executeUpdate("INSERT INTO car (chassisNo, model, carweight) VALUES (?, ?, ?)", car.getChassisNo(), car.getModel(),
+            car.getWeight());
+      return new CarDTO(car.getChassisNo(), car.getModel(), car.getWeight());
    }
    
    @Override
@@ -157,10 +157,17 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    }
    
    @Override
+   public Collection<PalletDTO> readPalletsByType(PartType partType) throws RemoteException
+   {
+      return palletHelper.map((rs) -> createPallet(rs), "Select * from Pallet where CPartType = ?", partType.toString());
+   }
+   
+   @Override
    public Collection<PackageDTO> readAllPackages() throws RemoteException
    {
       return packageHelper.map((rs) -> createPackage(rs), "Select * from Package");
    }
+
    /////////////////////////////////
   //UPDATE STATEMENTS//////////////
  /////////////////////////////////
@@ -228,9 +235,24 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       try (Connection connection = getConnection())
       {
+         CarDTO car = new CarDTO(232342, "Ferrari", 5342.23);
          Statement stat = connection.createStatement();
-         stat.executeUpdate("INSERT INTO car VALUES(123456, 'Ford', 2000)");
-         stat.executeUpdate("DELETE FROM car");
+         stat.executeUpdate("DELETE from car");
+         stat.executeUpdate("INSERT INTO car (chassisNo, Model, carWeight) VALUES(123456, 'Ford', 2000)");
+         try
+         {
+            this.insertCar(car);
+            this.insertPallet(3241.00, PartType.Door);
+            this.insertPallet(3211.00, PartType.Door);
+            this.insertPallet(3211.00, PartType.Engine);
+            System.out.println(this.readPalletsByType(PartType.Door));
+         }
+         catch (RemoteException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+//         stat.executeUpdate("DELETE FROM car");
          
       }
    }
@@ -246,7 +268,7 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       DAOServer DAOServer = new DAOServer();
       DAOServer.createTestDB();
-      Registry registry = LocateRegistry.getRegistry(1099);
+      Registry registry = LocateRegistry.createRegistry(1099);
       registry.rebind("Dao", DAOServer);
    }
 

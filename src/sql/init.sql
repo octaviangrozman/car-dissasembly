@@ -1,7 +1,7 @@
+drop type CPartType;
 CREATE TYPE CPartType AS ENUM('Wheel', 'Engine', 'Windscreen', 'Horn', 'Lights', 'Door',
     						 'Seats','SeatBelts','Steering','Suspension',
     						 'Gearbox','FuelSystem','TrunkTailgate');
-
 
 create table car
 (

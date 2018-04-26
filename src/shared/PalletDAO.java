@@ -11,6 +11,8 @@ public interface PalletDAO extends Remote
 
    Collection<PalletDTO> readAllPallets() throws RemoteException;
 
+   Collection<PalletDTO> readPalletsByType(PartType partType) throws RemoteException;
+
    void updatePallet(PalletDTO pallet) throws RemoteException;
 
    void deletePallet(PalletDTO pallet) throws RemoteException;
