@@ -99,12 +99,12 @@ public class DatabaseHelper<T>
       {
          PreparedStatement stat = prepare(connection, sql, parameters);
          ResultSet rs = stat.executeQuery();
-         LinkedList<T> allCars = new LinkedList<>();
+         LinkedList<T> allRows = new LinkedList<>();
          while (rs.next())
          {
-            allCars.add(mapper.create(rs));
+            allRows.add(mapper.create(rs));
          }
-         return allCars;
+         return allRows;
       }
       catch (SQLException e)
       {

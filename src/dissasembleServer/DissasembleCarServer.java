@@ -10,61 +10,73 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class DissasembleCarServer extends UnicastRemoteObject implements RIDissasembleServer {
+public class DissasembleCarServer extends UnicastRemoteObject
+      implements RIDissasembleServer
+{
 
-    private CarPartDAO carPartDAO;
-    private PalletDAO palletDAO;
-    private Random random = new Random();
+   private CarPartDAO carPartDAO;
+   private PalletDAO palletDAO;
+   private Random random = new Random();
 
+   public DissasembleCarServer(RIDaoServer databaseServer)
+         throws RemoteException
+   {
+      carPartDAO = (CarPartDAO) databaseServer;
+      palletDAO = (PalletDAO) databaseServer;
+   }
 
-    public DissasembleCarServer(RIDaoServer databaseServer) throws RemoteException {
-        carPartDAO = (CarPartDAO) databaseServer;
-        palletDAO = (PalletDAO) databaseServer;
-    }
+   @Override
+   public void dismantleCar(Car car) throws RemoteException
+   {
+      ArrayList<PartType> partTypes = getRandomPartTypes();
 
-    @Override
-    public void dismantleCar(Car car) throws RemoteException {
-        ArrayList<PartType> partTypes = getRandomPartTypes();
+      for (PartType partType : partTypes)
+      {
+         double partWeight = getRandomWeight();
+         carPartDAO.insertCarPart(partWeight, car.getChassisNo(),
+               car.getModel(), partType);
+         // TODO: add part to pallet
+         // palletDAO.insertPallet(500, partType);
+      }
 
-       for(PartType partType : partTypes ) {
-           double partWeight = getRandomWeight();
-           carPartDAO.insertCarPart(partWeight, car.getChassisNo(), car.getModel(), partType);
-//         TODO: add part to pallet
-//           palletDAO.insertPallet(500, partType);
-       }
+   }
 
-    }
+   private ArrayList<PartType> getRandomPartTypes()
+   {
+      ArrayList<PartType> resultParts = new ArrayList<>();
 
-    private ArrayList<PartType> getRandomPartTypes() {
-        ArrayList<PartType> resultParts = new ArrayList<>();
+      PartType[] allParts = PartType.values();
+      Set<Integer> partsSet = new HashSet<>();
 
-        PartType[] allParts = PartType.values();
-        Set<Integer> partsSet = new HashSet<>();
+      // generate some unique random ids from 0 to allParts.length
+      while (partsSet.size() < allParts.length)
+      {
+         int partIndex = random.nextInt(allParts.length - 1);
+         if (partsSet.contains(partIndex))
+            continue;
+         partsSet.add(partIndex);
+      }
 
-        // generate some unique random ids from 0 to allParts.length
-        while (partsSet.size() < allParts.length) {
-            int partIndex = random.nextInt(allParts.length - 1);
-            if (partsSet.contains(partIndex)) continue;
-            partsSet.add(partIndex);
-        }
+      // add partTypes to result
+      for (int partIndex : partsSet)
+      {
+         resultParts.add(allParts[partIndex]);
+      }
 
-        // add partTypes to result
-        for (int partIndex : partsSet) {
-            resultParts.add(allParts[partIndex]);
-        }
+      return resultParts;
+   }
 
-        return resultParts;
-    }
+   public double getRandomWeight()
+   {
+      return random.nextDouble() * 100;
+   }
 
-    public double getRandomWeight() {
-        return random.nextDouble() * 100;
-    }
-
-
-    public static void main(String[] args) throws RemoteException {
-        RIDissasembleServer branchBankServer = new DissasembleCarServer(DatabaseLocator.getDatabaseServer());
-        Registry registry = LocateRegistry.getRegistry(RIDissasembleServer.PORT);
-        registry.rebind(RIDissasembleServer.SERVER_NAME, branchBankServer);
-        System.out.println("Dissasemble server started...");
-    }
+   public static void main(String[] args) throws RemoteException
+   {
+      RIDissasembleServer branchBankServer = new DissasembleCarServer(
+            DatabaseLocator.getDatabaseServer());
+      Registry registry = LocateRegistry.getRegistry(RIDissasembleServer.PORT);
+      registry.rebind(RIDissasembleServer.SERVER_NAME, branchBankServer);
+      System.out.println("Dissasemble server started...");
+   }
 }

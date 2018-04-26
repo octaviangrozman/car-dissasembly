@@ -21,6 +21,15 @@ public class PalletDTO implements Serializable
       currentWeight = 0;
    }
    
+   public PalletDTO(int palletNo, double weightCapacity, PartType partType)
+   {
+      this.palletNo = palletNo;
+      this.weightCapacity = weightCapacity;
+      this.partType = partType;
+      parts = new PartList();
+      currentWeight = 0;
+   }
+   
    public int getPalletNo()
    {
       return palletNo;
@@ -29,6 +38,11 @@ public class PalletDTO implements Serializable
    public double getWeightCapacity()
    {
       return weightCapacity;
+   }
+   
+   public double getCurrentWeight()
+   {
+      return currentWeight;
    }
 
    public PartType getPartType()
@@ -39,5 +53,10 @@ public class PalletDTO implements Serializable
    public PartList getParts()
    {
       return parts;
+   }
+   
+   public String toString()
+   {
+      return "Pallet " + palletNo + ": WC " + weightCapacity + " PT " + partType;
    }
 }

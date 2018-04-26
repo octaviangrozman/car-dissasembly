@@ -6,6 +6,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -54,22 +55,22 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    public CarPartDTO insertCarPart(double weight, int chassisNo, String model,
          PartType type) throws RemoteException
    {
-      partHelper.executeUpdate("INSERT INTO Part (carChassisNo, partType, partWeight) VALUES (?, ?, ?)", chassisNo, type,
-            weight);
+      partHelper.executeUpdate("INSERT INTO Part (carChassisNo, partType, partWeight, carModel) VALUES (?, CAST(? AS CPartType), ?, ?)", chassisNo, PartType.valueOf(type.toString()).toString(),
+            weight, model);
       return new CarPartDTO(weight, chassisNo, model, type);
    }
    
    @Override
    public PalletDTO insertPallet(double weightCapacity, PartType type) throws RemoteException
    {
-      palletHelper.executeUpdate("INSERT INTO Pallet (weightCapacity, partType) VALUES (?, ?)", weightCapacity, type);
+      palletHelper.executeUpdate("INSERT INTO Pallet (weightCapacity, partType) VALUES (?, CAST(? AS CPartType))", weightCapacity, PartType.valueOf(type.toString()).toString());
       return new PalletDTO(weightCapacity, type);
    }
    
    @Override
    public PackageDTO insertPackage(String model, PartType type) throws RemoteException
    {
-      packageHelper.executeUpdate("INSERT INTO Package (carModel, partType) VALUES (?, ?)", model, type);
+      packageHelper.executeUpdate("INSERT INTO Package (carModel, partType) VALUES (?, CAST(? AS CPartType))", model, PartType.valueOf(type.toString()).toString());
       return new PackageDTO(model, type);
    }
    
@@ -89,22 +90,25 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       int chassisNo = rs1.getInt("carChassisNo");
       double weight = rs1.getDouble("partWeight");
       String model = rs1.getString("carModel");
+      int ID = rs1.getInt("ID");
       PartType type = PartType.valueOf(rs1.getString("partType"));
-      return new CarPartDTO(weight, chassisNo, model, type);
+      return new CarPartDTO(ID, weight, chassisNo, model, type);
    }
    
    private PalletDTO createPallet(ResultSet rs) throws SQLException
    {
       double weightCapacity = rs.getDouble("weightCapacity");
       PartType type = PartType.valueOf(rs.getString("partType"));
-      return new PalletDTO(weightCapacity, type);
+      int palletNo = rs.getInt("palletNo");
+      return new PalletDTO(palletNo, weightCapacity, type);
    }
    
    private PackageDTO createPackage(ResultSet rs) throws SQLException
    {
       String carModel = rs.getString("carModel");
       PartType partType = PartType.valueOf(rs.getString("partType"));
-      return new PackageDTO(carModel, partType);
+      int packageNo = rs.getInt("packageNo");
+      return new PackageDTO(packageNo, carModel, partType);
    }
     //////////////////////////////
    //READ statements/////////////
@@ -157,15 +161,35 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    }
    
    @Override
-   public Collection<PalletDTO> readPalletsByType(PartType partType) throws RemoteException
+   public Collection<PalletDTO> readPalletsByType(String partType) throws RemoteException
    {
-      return palletHelper.map((rs) -> createPallet(rs), "Select * from Pallet where CPartType = ?", partType.toString());
+      //AnimalType.valueOf(stmt.getString("pet_type"));
+      return palletHelper.map((rs) -> createPallet(rs), "Select * from Pallet where partType = CAST(? AS CPartType)", partType);
    }
    
    @Override
    public Collection<PackageDTO> readAllPackages() throws RemoteException
    {
       return packageHelper.map((rs) -> createPackage(rs), "Select * from Package");
+   }
+   
+   @Override
+   public double getPalletCurrentWeight(int palletNo) throws RemoteException
+   {
+      double currentWeight = -1;
+      try (Connection con = getConnection())
+      {
+         PreparedStatement stat = con.prepareStatement("Select sum(partWeight) from Part where palletNo = ?");
+         stat.setInt(1, palletNo);
+         ResultSet rs = stat.executeQuery();
+         rs.next();
+         currentWeight = rs.getDouble(1);
+      }
+      catch (SQLException e)
+      {
+         throw new RemoteException(e.getMessage(), e);
+      }
+      return currentWeight;
    }
 
    /////////////////////////////////
@@ -182,8 +206,20 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    @Override
    public void updateCarPart(CarPartDTO carPart) throws RemoteException
    {
-      partHelper.executeUpdate("Update Part Set model = ?, type = ?, weight = ? where ID = ?"
-            , carPart.getModel(), carPart.getType().toString(), carPart.getWeight(), carPart.getId());
+      partHelper.executeUpdate("Update Part Set carChassisNo = ?, model = ?, type = ?, weight = ? where ID = ?",
+           carPart.getChassisNo() , carPart.getModel(), carPart.getType().toString(), carPart.getWeight(), carPart.getId());
+   }
+   
+   public void updateCarPartReferenceToPallet(int partID, int palletNo) throws RemoteException
+   {
+      partHelper.executeUpdate("Update Part Set palletNo = ? where ID = ?"
+            , palletNo, partID);
+   }
+   
+   public void updateCarPartReferenceToPackage(int partID, int packageNo) throws RemoteException
+   {
+      partHelper.executeUpdate("Update Part Set packageNo = ? where ID = ?"
+            , packageNo, partID);
    }
    
    @Override
@@ -227,8 +263,9 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       packageHelper.executeUpdate("DELETE FROM Package where packageNo = ?", packaged.getPackageNo());
    }
-   /////////////////////////////////////
-   /// DML STATEMENTS END!!!!!!////////
+   
+    /////////////////////////////////////
+   /// DML STATEMENTS END!!!!!!/////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    private void createTestDB() throws SQLException
@@ -237,15 +274,24 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       {
          CarDTO car = new CarDTO(232342, "Ferrari", 5342.23);
          Statement stat = connection.createStatement();
+        /* stat.executeUpdate("DELETE from part");
          stat.executeUpdate("DELETE from car");
+         stat.executeUpdate("DELETE from pallet");
+         stat.executeUpdate("DELETE from package");
          stat.executeUpdate("INSERT INTO car (chassisNo, Model, carWeight) VALUES(123456, 'Ford', 2000)");
          try
          {
             this.insertCar(car);
             this.insertPallet(3241.00, PartType.Door);
             this.insertPallet(3211.00, PartType.Door);
-            this.insertPallet(3211.00, PartType.Engine);
-            System.out.println(this.readPalletsByType(PartType.Door));
+            this.insertPallet(3211.00, PartType.Engine);*/
+            System.out.println(this.readPalletsByType("Door").toString());
+            //this.insertCarPart(23.76, 232342, "Ferrari", PartType.Door);
+           // this.insertPackage("Ferrari", PartType.FuelSystem);
+            System.out.println(this.readAllCarParts().toString());
+            //this.updateCarPartReferenceToPackage(9, 8);
+            //this.updateCarPartReferenceToPallet(9, 61);
+            System.out.println(this.getPalletCurrentWeight(61));
          }
          catch (RemoteException e)
          {
@@ -253,9 +299,8 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
             e.printStackTrace();
          }
 //         stat.executeUpdate("DELETE FROM car");
-         
       }
-   }
+   //}
 
    public static void startAsServer() throws RemoteException
    {

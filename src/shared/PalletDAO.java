@@ -11,7 +11,9 @@ public interface PalletDAO extends Remote
 
    Collection<PalletDTO> readAllPallets() throws RemoteException;
 
-   Collection<PalletDTO> readPalletsByType(PartType partType) throws RemoteException;
+   Collection<PalletDTO> readPalletsByType(String partType) throws RemoteException;
+   
+   double getPalletCurrentWeight(int palletNo) throws RemoteException;
 
    void updatePallet(PalletDTO pallet) throws RemoteException;
 
