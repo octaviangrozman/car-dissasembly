@@ -31,11 +31,15 @@ public class PalletDTO implements Serializable
       return weightCapacity;
    }
 
+   public double getCurrentWeight() {
+      return currentWeight;
+   }
+
    public PartType getPartType()
    {
       return partType;
    }
-   
+
    public PartList getParts()
    {
       return parts;
