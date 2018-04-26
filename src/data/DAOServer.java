@@ -127,6 +127,18 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    }
    
    @Override
+   public CarPartDTO readCarPartByType(PartType type) throws RemoteException
+   {  //If need to be sure it does not belong on Pallet/Package already: "...CPartType) AND packageNo IS null LIMIT 1"
+      return partHelper.mapSingle((rs) -> createCarPart(rs), "SELECT * FROM Part where partType= CAST(? AS CPartType) LIMIT 1", PartType.valueOf(type.toString()).toString());
+   }
+   
+   @Override
+   public CarPartDTO readCarPartByTypeAndModel(PartType type, String model) throws RemoteException
+   {  //If need to be sure it does not belong on Pallet/Package already: "...CPartType) AND packageNo IS null LIMIT 1"
+      return partHelper.mapSingle((rs) -> createCarPart(rs), "SELECT * FROM Part where partType= CAST(? AS CPartType) AND carModel = ? LIMIT 1", PartType.valueOf(type.toString()).toString(), model);
+   }
+   
+   @Override
    public PalletDTO readPallet(int palletNo) throws RemoteException
    {
       return palletHelper.mapSingle((rs) -> createPallet(rs), "Select * from Pallet where palletNo = ?"
