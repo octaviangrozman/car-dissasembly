@@ -210,12 +210,14 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
            carPart.getChassisNo() , carPart.getModel(), carPart.getType().toString(), carPart.getWeight(), carPart.getId());
    }
    
+   @Override
    public void updateCarPartReferenceToPallet(int partID, int palletNo) throws RemoteException
    {
       partHelper.executeUpdate("Update Part Set palletNo = ? where ID = ?"
             , palletNo, partID);
    }
    
+   @Override
    public void updateCarPartReferenceToPackage(int partID, int packageNo) throws RemoteException
    {
       partHelper.executeUpdate("Update Part Set packageNo = ? where ID = ?"
