@@ -3,10 +3,9 @@ package shared;
 import models.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 
-public interface RIDissasembleServer extends Remote {
-    String SERVER_NAME = "dissasembleServer";
+public interface RIDissasembleFacility extends Remote {
+    String SERVER_NAME = "disassembling";
     int PORT = 1099;
 
     void dismantleCar(Car car) throws RemoteException;

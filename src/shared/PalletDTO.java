@@ -49,7 +49,7 @@ public class PalletDTO implements Serializable
    {
       return partType;
    }
-   
+
    public PartList getParts()
    {
       return parts;
