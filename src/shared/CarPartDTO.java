@@ -2,8 +2,7 @@ package shared;
 
 import java.io.Serializable;
 
-
-public class CarPartDTO implements Serializable 
+public class CarPartDTO implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private int id;
@@ -12,40 +11,50 @@ public class CarPartDTO implements Serializable
    private String model;
    private PartType type;
 
-  public CarPartDTO(double weight, int chassisNo, String model, PartType type) {
+   public CarPartDTO(double weight, int chassisNo, String model, PartType type)
+   {
       this.weight = weight;
       this.chassisNo = chassisNo;
       this.model = model;
       this.type = type;
-  }
-  
- 
-     
+   }
 
-  public int getId() {
+   public CarPartDTO(int id, double weight, int chassisNo, String model, PartType type)
+   {
+      this.id = id;
+      this.weight = weight;
+      this.chassisNo = chassisNo;
+      this.model = model;
+      this.type = type;
+   }
+
+   public int getId()
+   {
       return id;
-  }
+   }
 
-
-  public double getWeight() {
+   public double getWeight()
+   {
       return weight;
-  }
+   }
 
-
-  public int getChassisNo() {
+   public int getChassisNo()
+   {
       return chassisNo;
-  }
+   }
 
-
-  public String getModel() {
+   public String getModel()
+   {
       return model;
-  }
+   }
 
-
-  public PartType getType() {
+   public PartType getType()
+   {
       return type;
-  }
-  
- 
-
+   }
+   
+   public String toString()
+   {
+      return "Part: " + id + " PT " + type + " m " + model + " wt " + weight;
+   }
 }

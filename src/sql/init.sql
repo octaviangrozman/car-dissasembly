@@ -1,7 +1,11 @@
+drop table part;
+drop table car;
+drop table pallet;
+drop table package;
+drop type CPartType;
 CREATE TYPE CPartType AS ENUM('Wheel', 'Engine', 'Windscreen', 'Horn', 'Lights', 'Door',
     						 'Seats','SeatBelts','Steering','Suspension',
     						 'Gearbox','FuelSystem','TrunkTailgate');
-
 
 create table car
 (
@@ -12,21 +16,21 @@ create table car
 
 create table Pallet
 (
-	palletNo int primary key,
+	palletNo serial primary key,
 	weightCapacity numeric(7,2),
 	partType CPartType
 );
 
 create table Package
 (
-	packageNo int primary key,
+	packageNo serial primary key,
 	carModel varchar(20),
 	partType CPartType
 );
 
 create table Part
 (
-	ID int primary key,
+	ID serial primary key,
 	carChassisNo int references Car(chassisNo),
 	palletNo int references Pallet(palletNo),
 	packageNo int references Package(PackageNo),

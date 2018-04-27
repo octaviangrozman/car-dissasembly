@@ -11,7 +11,7 @@ public class DatabaseHelper<T>
 {
    private DatabaseConnectionInfo dbConnection;
    private String DBurl = "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public";
-   private String DBPassword = "123456";
+   private String DBPassword = "teentitans1sasu";
    private String DBUser = "postgres";
    
    public DatabaseHelper()
@@ -99,12 +99,12 @@ public class DatabaseHelper<T>
       {
          PreparedStatement stat = prepare(connection, sql, parameters);
          ResultSet rs = stat.executeQuery();
-         LinkedList<T> allCars = new LinkedList<>();
+         LinkedList<T> allRows = new LinkedList<>();
          while (rs.next())
          {
-            allCars.add(mapper.create(rs));
+            allRows.add(mapper.create(rs));
          }
-         return allCars;
+         return allRows;
       }
       catch (SQLException e)
       {
