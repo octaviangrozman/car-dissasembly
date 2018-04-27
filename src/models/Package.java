@@ -17,6 +17,8 @@ public class Package
       parts = new PartList();
    }
 
+   public Package(){}
+
    public int getPackageNo()
    {
       return packageNo;
