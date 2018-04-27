@@ -57,21 +57,21 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       partHelper.executeUpdate("INSERT INTO Part (carChassisNo, partType, partWeight, carModel) VALUES (?, CAST(? AS CPartType), ?, ?)", chassisNo, PartType.valueOf(type.toString()).toString(),
             weight, model);
-      return new CarPartDTO(weight, chassisNo, model, type);
+      return partHelper.mapSingle((rs) -> createCarPart(rs), "SELECT * from Part WHERE ID = (SELECT max(ID) from Part)");
    }
    
    @Override
    public PalletDTO insertPallet(double weightCapacity, PartType type) throws RemoteException
    {
       palletHelper.executeUpdate("INSERT INTO Pallet (weightCapacity, partType) VALUES (?, CAST(? AS CPartType))", weightCapacity, PartType.valueOf(type.toString()).toString());
-      return new PalletDTO(weightCapacity, type);
+      return palletHelper.mapSingle((rs) -> createPallet(rs), "SELECT * from Pallet WHERE palletNo = (SELECT max(palletNo) from Pallet)");
    }
    
    @Override
    public PackageDTO insertPackage(String model, PartType type) throws RemoteException
    {
       packageHelper.executeUpdate("INSERT INTO Package (carModel, partType) VALUES (?, CAST(? AS CPartType))", model, PartType.valueOf(type.toString()).toString());
-      return new PackageDTO(model, type);
+      return packageHelper.mapSingle((rs) -> createPackage(rs), "SELECT * from Package WHERE packageNo = (SELECT max(packageNo) from Package)");
    }
    
     //////////////////////////////
@@ -306,7 +306,13 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
             //this.updateCarPartReferenceToPackage(9, 8);
             //this.updateCarPartReferenceToPallet(9, 61);
             System.out.println(this.getPalletCurrentWeight(61));
-         }
+            PackageDTO packaged = new PackageDTO("Reno", PartType.Gearbox);
+          //  this.deletePackage(packaged);
+            System.out.println(this.insertPackage(packaged.getCarModel(), packaged.getPartType()));
+            System.out.println(this.insertCarPart(52.30, 232342, "Ferrari", PartType.Lights));
+            System.out.println(this.insertPallet(80, PartType.SeatBelts));
+   
+      }
          catch (RemoteException e)
          {
             // TODO Auto-generated catch block
