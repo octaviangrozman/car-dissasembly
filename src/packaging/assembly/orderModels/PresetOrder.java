@@ -2,15 +2,7 @@ package packaging.assembly.orderModels;
 
 import shared.PartType;
 
-import java.util.HashMap;
-
 public class PresetOrder extends Order {
-    public static final HashMap<Preset, PartType[]> presetMap = new HashMap<>();
-
-    static{
-        presetMap.put(Preset.STEERING, new PartType[]{PartType.Steering, PartType.Horn,PartType.SeatBelts});
-        //presetMap.put(Preset.TRANSMISSION, new PartType[]{PartType.Engine, PartType.Gearbox,PartType.FuelSystem});
-    }
 
     public Preset preset;
 
@@ -20,10 +12,11 @@ public class PresetOrder extends Order {
     }
 
     public enum Preset{
-        STEERING(new PartType[]{PartType.Lights, PartType.Gearbox, PartType.SeatBelts});
-
+        STEERING(new PartType[]{PartType.Steering, PartType.Door, PartType.SeatBelts}),
+        LIGHTNING(new PartType[]{PartType.Lights, PartType.Gearbox, PartType.Engine});
 
         public PartType[] partTypes;
+
         Preset(PartType[] partTypes){
                 this.partTypes = partTypes;
         }
