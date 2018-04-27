@@ -5,8 +5,8 @@ import shared.PartType;
 
 public class Order extends Package {
 
-    public Order(int packageNo, String carModel, PartType partType) {
-        super(packageNo, carModel, partType);
+    public Order(String carModel, PartType partType) {
+        super(-1, carModel, partType);
     }
 
 }

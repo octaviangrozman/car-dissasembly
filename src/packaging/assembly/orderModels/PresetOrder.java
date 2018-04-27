@@ -6,8 +6,8 @@ public class PresetOrder extends Order {
 
     public Preset preset;
 
-    public PresetOrder(int packageNo, String carModel, Preset preset) {
-        super(packageNo, carModel, null);
+    public PresetOrder(String carModel, Preset preset) {
+        super(carModel, null);
         this.preset = preset;
     }
 
