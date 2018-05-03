@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface PackageDAO extends Remote
 {
-   PackageDTO insertPackage(String carModel, PartType partType)
+   PackageDTO insertPackage(String carModel)
+         throws RemoteException;
+   
+   PackageDTO insertPackage(PartType partType)
          throws RemoteException;
 
    List<PackageDTO> readAllPackages() throws RemoteException;

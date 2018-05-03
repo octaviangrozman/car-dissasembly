@@ -57,8 +57,8 @@ public class PackageFacility
    {
       new PackageFacility(new PackageAssembly(), new RandomOrderGenerator(5),
             new ArrayDeque<>())
-                  //.work(new TypeOrder(PartType.Door, 2));
-                    .work(new PresetOrder("BMW", Preset.LIGHTNING));
+                  //.work(new TypeOrder(PartType.Wheel, 2));
+                    .work(new PresetOrder("Ferrari", Preset.LIGHTNING));
    }
 
    private void work(int numberOfOrders)
@@ -74,8 +74,11 @@ public class PackageFacility
       PackageDTO packageDTO = null;
       try
       {
-         packageDTO = DB.insertPackage(order.getCarModel(),
-               order.getPartType());
+         if(order.getCarModel() == null)
+            packageDTO = DB.insertPackage(order.getPartType());
+         
+         if(order.getPartType() == null)
+            packageDTO = DB.insertPackage(order.getCarModel());
       }
       catch (RemoteException e)
       {
