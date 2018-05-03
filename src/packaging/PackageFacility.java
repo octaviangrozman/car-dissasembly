@@ -4,6 +4,8 @@ import models.Pallet;
 import packaging.assembly.IPackageAssembly;
 import packaging.assembly.PackageAssembly;
 import packaging.assembly.orderModels.Order;
+import packaging.assembly.orderModels.PresetOrder;
+import packaging.assembly.orderModels.PresetOrder.Preset;
 import packaging.assembly.orderModels.TypeOrder;
 import shared.DatabaseLocator;
 import shared.PackageDAO;
@@ -55,7 +57,8 @@ public class PackageFacility
    {
       new PackageFacility(new PackageAssembly(), new RandomOrderGenerator(5),
             new ArrayDeque<>())
-                  .work(new TypeOrder("Nissan Almera", PartType.Door, 2));
+                  //.work(new TypeOrder(PartType.Door, 2));
+                    .work(new PresetOrder("BMW", Preset.LIGHTNING));
    }
 
    private void work(int numberOfOrders)

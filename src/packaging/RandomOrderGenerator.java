@@ -25,8 +25,6 @@ class RandomOrderGenerator implements IOrderGenerator
       Order order;
       if (RD.nextInt(1) == 1)
          order = new TypeOrder(
-
-               CAR_MODELS[RD.nextInt(3)],
                PartType.values()[RD.nextInt(PartType.values().length)],
                (RD.nextInt(maxPartsPerPackageLimit) + 1));
       else
