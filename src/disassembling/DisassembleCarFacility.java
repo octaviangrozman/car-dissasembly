@@ -96,7 +96,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
 
    private double getRandomWeight()
    {
-      return random.nextDouble() * MAX_CAR_PART_WEIGHT_KG + 1;
+      return random.nextDouble() * MAX_CAR_PART_WEIGHT_KG + 2;
    }
 
    
