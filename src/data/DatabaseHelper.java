@@ -11,7 +11,7 @@ public class DatabaseHelper<T>
 {
    private DatabaseConnectionInfo dbConnection;
    private String DBurl = "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public";
-   private String DBPassword = "teentitans1sasu";
+   private String DBPassword = "123456";
    private String DBUser = "postgres";
    
    public DatabaseHelper()

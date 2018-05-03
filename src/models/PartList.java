@@ -2,9 +2,10 @@ package models;
 
 import shared.PartType;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PartList
+public class PartList implements Serializable
 {
    private ArrayList<CarPart> parts;
    

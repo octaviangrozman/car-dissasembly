@@ -1,8 +1,10 @@
 package models;
 
+import java.io.Serializable;
+
 import shared.PartType;
 
-public class Package
+public class Package implements Serializable
 {
    private int packageNo;
    private String carModel;
