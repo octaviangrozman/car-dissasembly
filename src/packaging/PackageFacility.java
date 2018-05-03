@@ -57,8 +57,8 @@ public class PackageFacility
    {
       new PackageFacility(new PackageAssembly(), new RandomOrderGenerator(5),
             new ArrayDeque<>())
-                  //.work(new TypeOrder(PartType.Wheel, 2));
-                    .work(new PresetOrder("Ferrari", Preset.LIGHTNING));
+                  .work(new TypeOrder(PartType.Wheel, 2));
+                  //.work(new PresetOrder("Ferrari", Preset.LIGHTNING));
    }
 
    private void work(int numberOfOrders)

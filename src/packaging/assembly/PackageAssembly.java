@@ -7,6 +7,7 @@ import packaging.assembly.orderModels.Order;
 import packaging.assembly.orderModels.PresetOrder;
 import packaging.assembly.orderModels.TypeOrder;
 import shared.CarPartDAO;
+import shared.CarPartDTO;
 import shared.DatabaseLocator;
 
 import java.rmi.RemoteException;
@@ -39,15 +40,19 @@ public class PackageAssembly implements IPackageAssembly
    private Package assemblePackage(TypeOrder order)
    {
       boolean isLookingForMissingCarParts = false;
+      CarPartDTO part;
 
       while (order.getParts().size() < order.quantity)
       {
+         
          for (int i = order.getParts().size(); i < order.quantity; i++)
          {
             try
             {
+               part = DB.readCarPartByType(order.getPartType());
+
                CarPart carPart = Util
-                     .convertToModel(DB.readCarPartByType(order.getPartType()));
+                     .convertToModel(part);
                if (carPart == null)
                {
                   if (isLookingForMissingCarParts)
@@ -66,7 +71,7 @@ public class PackageAssembly implements IPackageAssembly
                   continue;
                }
                order.addPart(carPart);
-               DB.updateCarPartReferenceToPackage(carPart.getId(),
+               DB.updateCarPartReferenceToPackage(part.getId(),
                      order.getPackageNo());
             }
             catch (RemoteException e)
@@ -83,6 +88,7 @@ public class PackageAssembly implements IPackageAssembly
    private Package assemblePackage(PresetOrder order)
    {
       boolean isLookingForMissingCarParts = false;
+      CarPartDTO part;
 
       while (order.getParts().size() < order.preset.partTypes.length)
       {
@@ -91,11 +97,11 @@ public class PackageAssembly implements IPackageAssembly
          {
             try
             {
+               part = DB.readCarPartByTypeAndModel(order.preset.partTypes[i] ,
+                     order.getCarModel());
                if (order.preset.partTypes[i] == null)
                   continue;
-               CarPart carPart = Util.convertToModel(
-                     DB.readCarPartByTypeAndModel(order.preset.partTypes[i],
-                           order.getCarModel()));
+               CarPart carPart = Util.convertToModel(part);
                if (carPart == null)
                {
                   if (isLookingForMissingCarParts)
@@ -116,7 +122,7 @@ public class PackageAssembly implements IPackageAssembly
                }
                order.addPart(carPart);
                order.preset.partTypes[i] = null;
-               DB.updateCarPartReferenceToPackage(carPart.getId(),
+               DB.updateCarPartReferenceToPackage(part.getId(),
                      order.getPackageNo());
             }
             catch (RemoteException e)
