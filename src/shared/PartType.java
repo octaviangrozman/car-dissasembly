@@ -1,6 +1,8 @@
 package shared;
 
-public enum PartType {
+import java.io.Serializable;
+
+public enum PartType implements Serializable{
     Wheel,
     Engine,
     Windscreen,

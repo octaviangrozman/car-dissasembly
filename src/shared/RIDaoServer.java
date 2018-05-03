@@ -1,6 +1,8 @@
 package shared;
 
-public interface RIDaoServer
+import java.rmi.Remote;
+
+public interface RIDaoServer extends Remote
 {
    String SERVER_NAME = "dbServer";
    int PORT = 1099;

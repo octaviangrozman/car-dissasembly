@@ -1,8 +1,10 @@
 package models;
 
+import java.io.Serializable;
+
 import shared.PartType;
 
-public class Pallet
+public class Pallet implements Serializable
 {
    private int palletNo; //like IDs - get from DB
    private double weightCapacity;
