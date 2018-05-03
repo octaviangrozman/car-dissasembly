@@ -37,7 +37,7 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    {
       return DriverManager.getConnection(
             "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public",
-            "postgres", "teentitans1sasu");
+            "postgres", "123456");
    }
    ////////SQL DML STATEMENTS//////////////////////////////////////////////////////////////////
     ///////////////////////////////////

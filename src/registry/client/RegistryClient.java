@@ -22,6 +22,7 @@ public class RegistryClient {
         registryServer.registerCar(ferrari);
         registryServer.registerCar(bugatti);
         registryServer.registerCar(kamaz);
+        
     }
 
 }

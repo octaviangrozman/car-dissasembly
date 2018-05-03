@@ -100,7 +100,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
    }
 
    
-   public static void main(String[] args) throws RemoteException
+  /* public static void main(String[] args) throws RemoteException
    {
       DisassembleCarFacility disassembleCarFacility = new DisassembleCarFacility(
             DatabaseLocator.getDatabaseServer());
@@ -109,5 +109,5 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       registry.rebind(RIDisassembleFacility.SERVER_NAME,
             disassembleCarFacility);
       out.println("Disassemble server started...");
-   }
+   }*/
 }

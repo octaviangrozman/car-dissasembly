@@ -9,6 +9,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import disassembling.DisassembleCarFacility;
+
 import static java.lang.System.out;
 
 public class RegistryServer
@@ -25,16 +27,20 @@ public class RegistryServer
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(RIDisassembleFacility.PORT);
-
-        RIDisassembleFacility disassembleFacility = (RIDisassembleFacility)
-                registry.lookup(RIDisassembleFacility.SERVER_NAME);
-
+       
+       
+       DisassembleCarFacility disassembleCarFacility = new DisassembleCarFacility(
+             DatabaseLocator.getDatabaseServer());
+       Registry registry = LocateRegistry.getRegistry(RIDisassembleFacility.PORT);
+       registry.rebind(RIDisassembleFacility.SERVER_NAME, disassembleCarFacility);
+       out.println("Disassemble server started...");
+       
+             
+              
+         //Start registry server
         RIRegistryServer registryServer = new RegistryServer(
-                DatabaseLocator.getDatabaseServer(), disassembleFacility);
-
+                DatabaseLocator.getDatabaseServer(), disassembleCarFacility);
         registry.rebind(RIRegistryServer.SERVER_NAME, registryServer);
-
         out.println("Registry server started...");
     }
 
