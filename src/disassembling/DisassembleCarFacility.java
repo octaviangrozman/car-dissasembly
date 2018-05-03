@@ -17,7 +17,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       implements RIDisassembleFacility
 {
 
-   private static final int MAX_PALLET_WEIGHT_CAPACITY_KG = 500;
+   private static final int MAX_PALLET_WEIGHT_CAPACITY_KG = 501;
    private static final int MAX_CAR_PART_WEIGHT_KG = 100;
    private CarPartDAO carPartDAO;
    private PalletDAO palletDAO;
