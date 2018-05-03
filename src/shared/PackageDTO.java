@@ -47,4 +47,9 @@ public class PackageDTO implements Serializable
    {
       return parts;
    }
+   
+   public String toString()
+   {
+      return "Package: " + packageNo + " carModel: " + carModel + " PT " + partType;
+   }
 }

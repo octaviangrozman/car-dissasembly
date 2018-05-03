@@ -1,8 +1,8 @@
 package models;
 
-import java.util.ArrayList;
-
 import shared.PartType;
+
+import java.util.ArrayList;
 
 public class PartList
 {
@@ -135,5 +135,9 @@ public class PartList
             return;
          }
       }
+   }
+
+   public int size(){
+      return this.parts.size();
    }
 }
