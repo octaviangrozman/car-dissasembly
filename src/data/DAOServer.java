@@ -103,6 +103,18 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       return new CarPartDTO(ID, weight, chassisNo, model, type);
    }
    
+   private CarPartDTO createTrackedCarPart(ResultSet rs) throws SQLException
+   {
+      int chassisNo = rs.getInt("carChassisNo");
+      double weight = rs.getDouble("partWeight");
+      String model = rs.getString("carModel");
+      int palletNo = rs.getInt("palletNo");
+      int packageNo = rs.getInt("packageNo");
+      int ID = rs.getInt("ID");
+      PartType type = PartType.valueOf(rs.getString("partType"));
+      return new CarPartDTO(ID, weight, chassisNo, model, type, palletNo, packageNo);
+   }
+   
    private PalletDTO createPallet(ResultSet rs) throws SQLException
    {
       double weightCapacity = rs.getDouble("weightCapacity");
@@ -154,6 +166,12 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    public List<CarPartDTO> readCarPartsOfCar(int chassisNo) throws RemoteException
    {
       return partHelper.map((rs1) -> createCarPart(rs1), "SELECT * FROM Part where carChassisNo= ?", chassisNo);
+   }
+   
+   @Override
+   public List<CarPartDTO> trackCarParts(int chassisNo) throws RemoteException
+   {
+      return partHelper.map((rs) -> createTrackedCarPart(rs), "SELECT * FROM Part where carChassisNo= ?", chassisNo);
    }
    
    @Override

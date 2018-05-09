@@ -16,6 +16,7 @@ public interface CarPartDAO extends Remote {
    CarPartDTO readCarPartByType(PartType type) throws RemoteException;
    CarPartDTO readCarPartByTypeAndModel(PartType type, String model) throws RemoteException;
    public List<CarPartDTO> readCarPartsOfCar(int chassisNo) throws RemoteException;
+   public List<CarPartDTO> trackCarParts(int chassisNo) throws RemoteException;
 }
 
 
