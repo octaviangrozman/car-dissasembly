@@ -10,6 +10,8 @@ public class CarPartDTO implements Serializable
    private int chassisNo;
    private String model;
    private PartType type;
+   private int palletNo;
+   private int packageNo;
 
    public CarPartDTO(double weight, int chassisNo, String model, PartType type)
    {
@@ -28,6 +30,16 @@ public class CarPartDTO implements Serializable
       this.type = type;
    }
 
+   public CarPartDTO(int id, double weight, int chassisNo, String model, PartType type, int palletNo, int packageNo)
+   {
+      this.id = id;
+      this.weight = weight;
+      this.chassisNo = chassisNo;
+      this.model = model;
+      this.type = type;
+      this.palletNo = palletNo;
+      this.packageNo = packageNo;
+   }
    public int getId()
    {
       return id;
