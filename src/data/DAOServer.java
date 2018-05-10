@@ -1,19 +1,13 @@
 package data;
 
+import shared.*;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collection;
+import java.sql.*;
 import java.util.List;
-
-import shared.*;
 
 public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO, PalletDAO, PackageDAO, RIDaoServer
 {
@@ -100,7 +94,8 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       String model = rs1.getString("carModel");
       int ID = rs1.getInt("ID");
       PartType type = PartType.valueOf(rs1.getString("partType"));
-      return new CarPartDTO(ID, weight, chassisNo, model, type);
+      int packageNo = rs1.getInt("packageNo");
+      return new CarPartDTO(ID, weight, chassisNo, model, type, 0, packageNo);
    }
    
    private CarPartDTO createTrackedCarPart(ResultSet rs) throws SQLException
@@ -230,6 +225,20 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    public List<PackageDTO> readAllPackages() throws RemoteException
    {
       return packageHelper.map((rs) -> createPackage(rs), "Select * from Package");
+   }
+
+   public List<String> readAllCarModels() throws RemoteException
+   {
+       return new DatabaseHelper<String>().map((rs) -> rs.getString(1), "SELECT DISTINCT carmodel FROM part");
+   }
+
+   public int readCarPartCount(PartType partType) throws RemoteException
+   {
+       return new DatabaseHelper<Integer>().mapSingle(
+               rs -> rs.getInt(1),
+               "SELECT COUNT(*) FROM part WHERE partType = CAST(? AS CPartType)",
+               PartType.valueOf(partType.toString()).toString()
+       );
    }
    
    @Override
@@ -362,7 +371,6 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
       }
          catch (RemoteException e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }}
 //         stat.executeUpdate("DELETE FROM car");

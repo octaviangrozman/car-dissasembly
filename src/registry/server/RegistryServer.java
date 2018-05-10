@@ -1,5 +1,6 @@
 package registry.server;
 
+import disassembling.DisassembleCarFacility;
 import models.Car;
 import shared.*;
 
@@ -8,8 +9,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
-import disassembling.DisassembleCarFacility;
 
 import static java.lang.System.out;
 

@@ -1,8 +1,8 @@
 package shared;
 
-import java.io.Serializable;
-
 import models.PartList;
+
+import java.io.Serializable;
 
 public class PalletDTO implements Serializable
 {

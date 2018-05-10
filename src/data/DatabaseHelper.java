@@ -1,11 +1,11 @@
 package data;
 
+import org.postgresql.Driver;
+
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.postgresql.Driver;
 
 public class DatabaseHelper<T>
 {

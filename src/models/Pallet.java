@@ -1,8 +1,8 @@
 package models;
 
-import java.io.Serializable;
-
 import shared.PartType;
+
+import java.io.Serializable;
 
 public class Pallet implements Serializable
 {

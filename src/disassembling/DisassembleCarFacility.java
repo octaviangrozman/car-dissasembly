@@ -4,14 +4,8 @@ import models.Car;
 import shared.*;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-
-import data.DAOServer;
-
-import static java.lang.System.out;
 
 public class DisassembleCarFacility extends UnicastRemoteObject
       implements RIDisassembleFacility
@@ -74,7 +68,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       PartType[] allParts = PartType.values();
       Set<Integer> partsSet = new HashSet<>();
 
-      int numberOfParts = random.nextInt(allParts.length - 1) + 1;
+      int numberOfParts = random.nextInt(allParts.length - 8) + 8;
 
       // generate some unique random ids from 0 to allParts.length
       while (partsSet.size() <= numberOfParts)

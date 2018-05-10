@@ -1,9 +1,8 @@
 package shared;
 
-import java.io.Serializable;
-
-import models.CarPart;
 import models.PartList;
+
+import java.io.Serializable;
 
 public class PackageDTO implements Serializable
 {

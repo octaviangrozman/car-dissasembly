@@ -2,7 +2,6 @@ package shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.List;
 
 public interface PalletDAO extends Remote

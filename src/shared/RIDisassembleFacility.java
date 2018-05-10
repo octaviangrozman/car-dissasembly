@@ -1,6 +1,7 @@
 package shared;
 
-import models.*;
+import models.Car;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

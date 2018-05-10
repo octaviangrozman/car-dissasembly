@@ -16,7 +16,7 @@ public class PresetOrder extends Order
    public enum Preset
    {
       STEERING(new PartType[] { PartType.Steering, PartType.Door, PartType.SeatBelts }),
-      LIGHTNING( new PartType[] { PartType.Lights, PartType.Gearbox });
+      LIGHTNING(new PartType[] { PartType.Lights, PartType.Gearbox });
 
       public PartType[] partTypes;
 

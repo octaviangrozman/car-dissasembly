@@ -8,7 +8,6 @@ import packaging.assembly.orderModels.PresetOrder;
 import packaging.assembly.orderModels.TypeOrder;
 import shared.CarPartDAO;
 import shared.CarPartDTO;
-import shared.DatabaseLocator;
 
 import java.rmi.RemoteException;
 

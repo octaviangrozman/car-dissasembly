@@ -13,22 +13,19 @@ public class PackageFacility
 {
    private PackageDAO packageDAO;
    private CarPartDAO carPartDAO;
+   private CarDAO carDAO;
    private IPackageAssembly assembly;
    private IOrderGenerator orderGenerator;
 
 
-   private PackageFacility(IOrderGenerator orderGenerator)
-   {
+   private PackageFacility() throws RemoteException {
       connectToDB();
       this.assembly = new PackageAssembly(carPartDAO, 5000);
-      this.orderGenerator = orderGenerator;
-
+      this.orderGenerator = new RandomOrderGenerator(3, carDAO, carPartDAO);
    }
 
-   public static void main(String[] args)
-   {
-      new PackageFacility(new RandomOrderGenerator(5))
-                  .work();
+   public static void main(String[] args) throws RemoteException {
+      new PackageFacility().work();
    }
 
    private void work(int numberOfOrders)
@@ -69,7 +66,12 @@ public class PackageFacility
 
    private void work()
    {
-      work(orderGenerator.generateOrder());
+      Order order = orderGenerator.generateOrder();
+      if (order == null) {
+         System.out.println("There are no enough parts in stock, try again!");
+         return;
+      }
+      work(order);
    }
 
    private void connectToDB()
@@ -79,6 +81,7 @@ public class PackageFacility
          RIDaoServer daoServer = DatabaseLocator.getDatabaseServer();
          this.packageDAO = (PackageDAO) daoServer;
          this.carPartDAO = (CarPartDAO) daoServer;
+         this.carDAO = (CarDAO) daoServer;
       }
       catch (RemoteException e)
       {
