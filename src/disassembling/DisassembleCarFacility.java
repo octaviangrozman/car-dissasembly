@@ -17,7 +17,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       implements RIDisassembleFacility
 {
 
-   private static final int MAX_PALLET_WEIGHT_CAPACITY_KG = 501;
+   private static final int MAX_PALLET_WEIGHT_CAPACITY_KG = 500;
    private static final int MAX_CAR_PART_WEIGHT_KG = 100;
    private CarPartDAO carPartDAO;
    private PalletDAO palletDAO;
@@ -56,7 +56,7 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       {
          double currentWeight = palletDAO
                .getPalletCurrentWeight(pallet.getPalletNo());
-         if (currentWeight + partWeight < pallet.getWeightCapacity())
+         if (currentWeight + partWeight <= pallet.getWeightCapacity())
          {
             return pallet.getPalletNo();
          }
@@ -80,6 +80,8 @@ public class DisassembleCarFacility extends UnicastRemoteObject
       while (partsSet.size() <= numberOfParts)
       {
          int partIndex = random.nextInt(allParts.length - 1);
+         // we're checking that there are no duplicate parts
+         // as a potential improvement could be to be able to have duplicate parts, such as 4 wheels
          if (partsSet.contains(partIndex))
             continue;
          partsSet.add(partIndex);
@@ -98,16 +100,4 @@ public class DisassembleCarFacility extends UnicastRemoteObject
    {
       return random.nextDouble() * MAX_CAR_PART_WEIGHT_KG + 2;
    }
-
-   
-  /* public static void main(String[] args) throws RemoteException
-   {
-      DisassembleCarFacility disassembleCarFacility = new DisassembleCarFacility(
-            DatabaseLocator.getDatabaseServer());
-      Registry registry = LocateRegistry
-            .getRegistry(RIDisassembleFacility.PORT);
-      registry.rebind(RIDisassembleFacility.SERVER_NAME,
-            disassembleCarFacility);
-      out.println("Disassemble server started...");
-   }*/
 }
