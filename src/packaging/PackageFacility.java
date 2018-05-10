@@ -1,19 +1,13 @@
 package packaging;
 
-import models.Package;
-import models.Pallet;
+
 import packaging.assembly.IPackageAssembly;
 import packaging.assembly.PackageAssembly;
 import packaging.assembly.orderModels.Order;
-import packaging.assembly.orderModels.PresetOrder;
-import packaging.assembly.orderModels.PresetOrder.Preset;
-import packaging.assembly.orderModels.TypeOrder;
 import shared.*;
 
 import java.rmi.RemoteException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Queue;
+
 
 public class PackageFacility
 {

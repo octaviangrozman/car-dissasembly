@@ -13,6 +13,22 @@ public class CarPartDTO implements Serializable
    private int palletNo;
    private int packageNo;
 
+   public int getPalletNo() {
+      return palletNo;
+   }
+
+   public void setPalletNo(int palletNo) {
+      this.palletNo = palletNo;
+   }
+
+   public int getPackageNo() {
+      return packageNo;
+   }
+
+   public void setPackageNo(int packageNo) {
+      this.packageNo = packageNo;
+   }
+
    public CarPartDTO(double weight, int chassisNo, String model, PartType type)
    {
       this.weight = weight;
