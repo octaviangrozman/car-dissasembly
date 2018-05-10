@@ -27,17 +27,16 @@ public class RegistryServer
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
-       
-       
+
+       // Starting disassembleFacility because it needs to start before RegistryServer starts
        DisassembleCarFacility disassembleCarFacility = new DisassembleCarFacility(
              DatabaseLocator.getDatabaseServer());
        Registry registry = LocateRegistry.getRegistry(RIDisassembleFacility.PORT);
        registry.rebind(RIDisassembleFacility.SERVER_NAME, disassembleCarFacility);
        out.println("Disassemble server started...");
-       
-             
-              
-         //Start registry server
+
+
+        //Start registry server
         RIRegistryServer registryServer = new RegistryServer(
                 DatabaseLocator.getDatabaseServer(), disassembleCarFacility);
         registry.rebind(RIRegistryServer.SERVER_NAME, registryServer);

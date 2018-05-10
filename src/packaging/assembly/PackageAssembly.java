@@ -15,26 +15,12 @@ import java.rmi.RemoteException;
 public class PackageAssembly implements IPackageAssembly
 {
    private final CarPartDAO DB;
+   private final int PAUSE_TIME;
 
-   public PackageAssembly()
+   public PackageAssembly(CarPartDAO db, int pauseTime)
    {
-      this.DB = connectToDB();
-   }
-
-   private CarPartDAO connectToDB()
-   {
-      CarPartDAO DBcarParts1;
-      try
-      {
-         DBcarParts1 = (CarPartDAO) DatabaseLocator.getDatabaseServer();
-      }
-      catch (RemoteException e)
-      {
-         System.out.println("Could not connect to Database server");
-         e.printStackTrace();
-         return null;
-      }
-      return DBcarParts1;
+      this.DB = db;
+      this.PAUSE_TIME = pauseTime;
    }
 
    private Package assemblePackage(TypeOrder order)
@@ -59,14 +45,7 @@ public class PackageAssembly implements IPackageAssembly
                   {
                      System.out.println("There is no Car Part of a type: "
                            + order.getPartType() + " . Waiting...");
-                     try
-                     {
-                        Thread.sleep(3000);
-                     }
-                     catch (InterruptedException e)
-                     {
-                        e.printStackTrace();
-                     }
+                     waitForCarPart();
                   }
                   continue;
                }
@@ -84,6 +63,8 @@ public class PackageAssembly implements IPackageAssembly
 
       return order;
    }
+
+
 
    private Package assemblePackage(PresetOrder order)
    {
@@ -108,14 +89,7 @@ public class PackageAssembly implements IPackageAssembly
                   {
                      System.out.println("There is no Car Part of a type: "
                            + order.preset.partTypes[i] + " . Waiting...");
-                     try
-                     {
-                        Thread.sleep(3000);
-                     }
-                     catch (InterruptedException e)
-                     {
-                        e.printStackTrace();
-                     }
+                     waitForCarPart();
                   }
 
                   continue;
@@ -137,12 +111,24 @@ public class PackageAssembly implements IPackageAssembly
       return order;
    }
 
+
    @Override
    public Package assemblePackage(Order order)
    {
-      if (order instanceof TypeOrder)
+      if (order.getCarModel() == null)
          return assemblePackage((TypeOrder) order);
       else
          return assemblePackage((PresetOrder) order);
+   }
+
+   private void waitForCarPart() {
+      try
+      {
+         Thread.sleep(PAUSE_TIME);
+      }
+      catch (InterruptedException e)
+      {
+         e.printStackTrace();
+      }
    }
 }

@@ -1,5 +1,6 @@
 package packaging;
 
+import models.Package;
 import models.Pallet;
 import packaging.assembly.IPackageAssembly;
 import packaging.assembly.PackageAssembly;
@@ -7,10 +8,7 @@ import packaging.assembly.orderModels.Order;
 import packaging.assembly.orderModels.PresetOrder;
 import packaging.assembly.orderModels.PresetOrder.Preset;
 import packaging.assembly.orderModels.TypeOrder;
-import shared.DatabaseLocator;
-import shared.PackageDAO;
-import shared.PackageDTO;
-import shared.PartType;
+import shared.*;
 
 import java.rmi.RemoteException;
 import java.util.ArrayDeque;
@@ -19,46 +17,24 @@ import java.util.Queue;
 
 public class PackageFacility
 {
-   private final PackageDAO DB;
-   private ArrayList<Pallet> palletList;
+   private PackageDAO packageDAO;
+   private CarPartDAO carPartDAO;
    private IPackageAssembly assembly;
-   private Queue<Order> orderQueue;
    private IOrderGenerator orderGenerator;
 
-   private int packageId;
 
-   private PackageFacility(IPackageAssembly assembly,
-         IOrderGenerator orderGenerator, ArrayDeque<Order> queue)
+   private PackageFacility(IOrderGenerator orderGenerator)
    {
-      this.DB = connectToDB();
-      this.packageId = 1;
-      this.assembly = assembly;
+      connectToDB();
+      this.assembly = new PackageAssembly(carPartDAO, 5000);
       this.orderGenerator = orderGenerator;
-      this.orderQueue = queue;
 
-      // orderQueue.add(orderGenerator.generateOrder(packageId++));
-      // Order orderToBeAssembled = orderQueue.peek();
-      // PackageDTO packageDTO = null;
-      // try {
-      // packageDTO =
-      // DB.insertPackage(orderToBeAssembled.getCarModel(),orderToBeAssembled.getPartType());
-      // } catch (RemoteException e) {
-      // e.printStackTrace();
-      // }
-      // if(packageDTO == null){
-      // System.out.println("Could not create an packageDTO SQL record");
-      // return;
-      // }
-      // orderToBeAssembled.setPackageNo(packageDTO.getPackageNo());
-      // assembly.assemblePackage(orderQueue.peek());
    }
 
    public static void main(String[] args)
    {
-      new PackageFacility(new PackageAssembly(), new RandomOrderGenerator(5),
-            new ArrayDeque<>())
-                  .work(new TypeOrder(PartType.Wheel, 2));
-                  //.work(new PresetOrder("Ferrari", Preset.LIGHTNING));
+      new PackageFacility(new RandomOrderGenerator(5))
+                  .work();
    }
 
    private void work(int numberOfOrders)
@@ -74,11 +50,13 @@ public class PackageFacility
       PackageDTO packageDTO = null;
       try
       {
+         //FINDING OUT WHAT TYPE OF ORDER IT IS: TYPEORDER OR PRESETORDER AND PASSING THE VALUES TO DB ACCORDINGLY
+         //PRESET ORDER MUST HAVE A CARMODEL AND TYPEORDER MUST NOT HAVE A CARMODEL
          if(order.getCarModel() == null)
-            packageDTO = DB.insertPackage(order.getPartType());
+            packageDTO = packageDAO.insertPackage(order.getPartType());
          
          if(order.getPartType() == null)
-            packageDTO = DB.insertPackage(order.getCarModel());
+            packageDTO = packageDAO.insertPackage(order.getCarModel());
       }
       catch (RemoteException e)
       {
@@ -89,7 +67,9 @@ public class PackageFacility
          System.out.println("Could not create an packageDTO SQL record");
          return;
       }
+      //IMPORTANT
       order.setPackageNo(packageDTO.getPackageNo());
+
       assembly.assemblePackage(order);
    }
 
@@ -98,19 +78,18 @@ public class PackageFacility
       work(orderGenerator.generateOrder());
    }
 
-   private PackageDAO connectToDB()
+   private void connectToDB()
    {
-      PackageDAO database;
       try
       {
-         database = (PackageDAO) DatabaseLocator.getDatabaseServer();
+         RIDaoServer daoServer = DatabaseLocator.getDatabaseServer();
+         this.packageDAO = (PackageDAO) daoServer;
+         this.carPartDAO = (CarPartDAO) daoServer;
       }
       catch (RemoteException e)
       {
          System.out.println("Could not connect to Database server");
          e.printStackTrace();
-         return null;
       }
-      return database;
    }
 }
