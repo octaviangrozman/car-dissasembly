@@ -16,13 +16,14 @@ class RandomOrderGenerator implements IOrderGenerator
 {
    private final Random random = new Random();
    private final CarPartDAO carPartDAO;
+   private CarDAO carDAO;
    private List<String> carModels;
    private final int maxPartsPerPackageLimit;
 
    public RandomOrderGenerator(int maxPartsPerPackageLimit, CarDAO carDAO, CarPartDAO carPartDAO) throws RemoteException {
       this.maxPartsPerPackageLimit = maxPartsPerPackageLimit;
       this.carPartDAO = carPartDAO;
-      carModels = carDAO.readAllCarModels();
+      this.carDAO = carDAO;
    }
 
    @Override
@@ -37,6 +38,11 @@ class RandomOrderGenerator implements IOrderGenerator
    }
 
    private Order generatePresetOrder() {
+      try {
+         carModels = carDAO.readAllCarModels();
+      } catch (RemoteException e) {
+         e.printStackTrace();
+      }
       String carModel = carModels.get(random.nextInt(carModels.size()));
       PresetOrder.Preset preset = PresetOrder.Preset.values()[random.nextInt(PresetOrder.Preset.values().length)];
 

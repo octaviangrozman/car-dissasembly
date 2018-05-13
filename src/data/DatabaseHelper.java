@@ -1,7 +1,5 @@
 package data;
 
-import org.postgresql.Driver;
-
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.LinkedList;
@@ -9,40 +7,25 @@ import java.util.List;
 
 public class DatabaseHelper<T>
 {
-   private DatabaseConnectionInfo dbConnection;
-   private String DBurl = "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public";
-   private String DBPassword = "123456";
-   private String DBUser = "postgres";
-   
-   public DatabaseHelper()
-         throws RemoteException
-   {
-      dbConnection = new DatabaseConnectionInfo(DBurl, DBUser, DBPassword);
-      try
-      {
-         DriverManager.registerDriver(new Driver());
-      }
-      catch (SQLException e)
-      {
-         throw new RemoteException("No JDBC driver", e);
+   private static Connection connection;
+
+   static{
+      try {
+         connection = getConnection();
+      } catch (SQLException e) {
+         e.printStackTrace();
       }
    }
 
- /*  public DatabaseHelper(String jdbcURL) throws RemoteException
+   public DatabaseHelper()
    {
-      this(jdbcURL, null, null);
-   }*/
+   }
 
-   protected Connection getConnection() throws SQLException
+   public static Connection getConnection() throws SQLException
    {
-      if (dbConnection.getUsername() == null)
-      {
-         return DriverManager.getConnection(dbConnection.getJdbcURL());
-      }
-      else
-      {
-         return DriverManager.getConnection(dbConnection.getJdbcURL(), dbConnection.getUsername(), dbConnection.getPassword());
-      }
+      return DriverManager.getConnection(
+              "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public",
+              "postgres", "123456");
    }
 
    private PreparedStatement prepare(Connection connection, String sql,

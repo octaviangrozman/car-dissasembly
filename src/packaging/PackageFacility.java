@@ -8,6 +8,8 @@ import shared.*;
 
 import java.rmi.RemoteException;
 
+import static java.lang.System.out;
+
 
 public class PackageFacility
 {
@@ -17,7 +19,6 @@ public class PackageFacility
    private IPackageAssembly assembly;
    private IOrderGenerator orderGenerator;
 
-
    private PackageFacility() throws RemoteException {
       connectToDB();
       this.assembly = new PackageAssembly(carPartDAO, 5000);
@@ -26,14 +27,6 @@ public class PackageFacility
 
    public static void main(String[] args) throws RemoteException {
       new PackageFacility().work();
-   }
-
-   private void work(int numberOfOrders)
-   {
-      for (int i = 0; i < numberOfOrders; i++)
-      {
-         work(orderGenerator.generateOrder());
-      }
    }
 
    private void work(Order order)
@@ -55,7 +48,7 @@ public class PackageFacility
       }
       if (packageDTO == null)
       {
-         System.out.println("Could not create an packageDTO SQL record");
+         out.println("Could not create an packageDTO SQL record");
          return;
       }
       //IMPORTANT
@@ -68,7 +61,7 @@ public class PackageFacility
    {
       Order order = orderGenerator.generateOrder();
       if (order == null) {
-         System.out.println("There are no enough parts in stock, try again!");
+         out.println("There are no enough parts in stock, try again!");
          return;
       }
       work(order);
@@ -85,7 +78,7 @@ public class PackageFacility
       }
       catch (RemoteException e)
       {
-         System.out.println("Could not connect to Database server");
+         out.println("Could not connect to Database server");
          e.printStackTrace();
       }
    }

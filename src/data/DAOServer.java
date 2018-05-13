@@ -6,7 +6,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO, PalletDAO, PackageDAO, RIDaoServer
@@ -17,22 +20,13 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    private DatabaseHelper<PalletDTO> palletHelper;
    private DatabaseHelper<PackageDTO> packageHelper;
 
-   
-   
-   public DAOServer() throws RemoteException
-   {//Connection information is in DatabaseHelper contructor implementation
+   public DAOServer() throws RemoteException {
       carHelper = new DatabaseHelper<>();
       partHelper = new DatabaseHelper<>();
       palletHelper = new DatabaseHelper<>();
       packageHelper = new DatabaseHelper<>();
    }
 
-   private Connection getConnection() throws SQLException
-   {
-      return DriverManager.getConnection(
-            "jdbc:postgresql://localhost:5432/carDisassembly?currentSchema=public",
-            "postgres", "123456");
-   }
    ////////SQL DML STATEMENTS//////////////////////////////////////////////////////////////////
     ///////////////////////////////////
    //DAO Insert Statements////////////
@@ -245,7 +239,7 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    public double getPalletCurrentWeight(int palletNo) throws RemoteException
    {
       double currentWeight = -1;
-      try (Connection con = getConnection())
+      try (Connection con = DatabaseHelper.getConnection())
       {
          PreparedStatement stat = con.prepareStatement("Select sum(partWeight) from Part where palletNo = ?");
          stat.setInt(1, palletNo);
@@ -338,56 +332,9 @@ public class DAOServer extends UnicastRemoteObject implements CarDAO, CarPartDAO
    /// DML STATEMENTS END!!!!!!/////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /*   private void createTestDB() throws SQLException
-   {
-      try (Connection connection = getConnection())
-      {
-         CarDTO car = new CarDTO(232342, "Ferrari", 5342.23);
-         Statement stat = connection.createStatement();
-         stat.executeUpdate("DELETE from part");
-         stat.executeUpdate("DELETE from car");
-         stat.executeUpdate("DELETE from pallet");
-         stat.executeUpdate("DELETE from package");
-         stat.executeUpdate("INSERT INTO car (chassisNo, Model, carWeight) VALUES(123456, 'Ford', 2000)");
-         try
-         {
-            this.insertCar(car);
-            this.insertPallet(3241.00, PartType.Door);
-            this.insertPallet(3211.00, PartType.Door);
-            this.insertPallet(3211.00, PartType.Engine);
-            System.out.println(this.readPalletsByType(PartType.Door).toString());
-            //this.insertCarPart(23.76, 232342, "Ferrari", PartType.Door);
-           // this.insertPackage("Ferrari", PartType.FuelSystem);
-            System.out.println(this.readAllCarParts().toString());
-            //this.updateCarPartReferenceToPackage(9, 8);
-            //this.updateCarPartReferenceToPallet(9, 61);
-            System.out.println(this.getPalletCurrentWeight(61));
-            PackageDTO packaged = new PackageDTO("Reno", PartType.Gearbox);
-          //  this.deletePackage(packaged);
-            System.out.println(this.insertPackage(packaged.getCarModel(), packaged.getPartType()));
-            System.out.println(this.insertCarPart(52.30, 232342, "Ferrari", PartType.Lights));
-            System.out.println(this.insertPallet(80, PartType.SeatBelts));
-   
-      }
-         catch (RemoteException e)
-         {
-            e.printStackTrace();
-         }}
-//         stat.executeUpdate("DELETE FROM car");
-      }*/
-   //}
 
-   public static void startAsServer() throws RemoteException
-   {
+   public static void startAsServer() throws RemoteException {
       DAOServer DAOServer = new DAOServer();
-      Registry registry = LocateRegistry.createRegistry(RIDaoServer.PORT);
-      registry.rebind(RIDaoServer.SERVER_NAME, DAOServer);
-   }
-
-   public static void startAsTestServer() throws RemoteException, SQLException
-   {
-      DAOServer DAOServer = new DAOServer();
-      //DAOServer.createTestDB();
       Registry registry = LocateRegistry.createRegistry(RIDaoServer.PORT);
       registry.rebind(RIDaoServer.SERVER_NAME, DAOServer);
    }
